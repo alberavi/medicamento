@@ -375,21 +375,29 @@
             box-shadow: 0 3px 10px rgba(16, 185, 129, 0.4);
         }
 
-        /* Footer mejorado */
+        /* Footer COMPLETAMENTE CORREGIDO */
         .footer {
             text-align: center;
-            padding: 2rem;
+            padding: 2rem 1rem;
             margin-top: 3rem;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
+            background: #667eea !important;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
             border-radius: var(--border-radius);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: #ffffff !important;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5) !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 10;
         }
 
         .footer p {
-            margin-bottom: 0.5rem;
-            font-weight: 500;
+            margin: 0.5rem 0;
+            font-weight: 600 !important;
+            color: #ffffff !important;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5) !important;
+            font-size: 1rem;
+            line-height: 1.4;
         }
 
         /* Animaciones de entrada */
@@ -420,8 +428,8 @@
             animation-delay: 0.3s;
         }
 
-        /* Responsive mejoras */
-        @media (max-width: 640px) {
+        /* Responsive MEJORADO */
+        @media (max-width: 768px) {
             .container {
                 padding: 0.5rem;
             }
@@ -454,6 +462,26 @@
 
             .med-name {
                 font-size: 1.1rem;
+            }
+
+            /* Footer ULTRA FORZADO para móviles */
+            .footer {
+                background: #5a67d8 !important;
+                background: linear-gradient(to bottom, #5a67d8, #553c9a) !important;
+                color: white !important;
+                padding: 1.5rem 1rem !important;
+                margin-top: 2rem !important;
+                border: 3px solid rgba(255, 255, 255, 0.4) !important;
+                box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3) !important;
+            }
+
+            .footer p {
+                color: white !important;
+                text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8) !important;
+                font-weight: 700 !important;
+                font-size: 0.95rem !important;
+                margin: 0.4rem 0 !important;
+                text-align: center !important;
             }
         }
 
@@ -544,6 +572,12 @@
                 background: white !important;
                 color: black !important;
                 border: 1px solid #ddd;
+                text-shadow: none !important;
+            }
+
+            .footer p {
+                color: black !important;
+                text-shadow: none !important;
             }
         }
     </style>
@@ -763,7 +797,6 @@
             const medItems = document.querySelectorAll('.med-item');
             const resetDayButton = document.getElementById('resetDayButton');
 
-            const STORAGE_KEY = 'medicina_mama_data';
             let currentDayData = {
                 date: '',
                 meds: {}
@@ -778,70 +811,26 @@
             }
 
             /**
-             * Save state to localStorage
+             * Save state to memory (no localStorage)
              */
             function saveState() {
-                try {
-                    localStorage.setItem(STORAGE_KEY, JSON.stringify(currentDayData));
-                    console.log('✅ Estado guardado correctamente:', currentDayData);
-                } catch (error) {
-                    console.error('❌ Error al guardar en localStorage:', error);
-                    // Fallback: mostrar mensaje al usuario
-                    showNotification('Error al guardar. Verifica el espacio de almacenamiento.', 'error');
-                }
+                console.log('✅ Estado guardado en memoria:', currentDayData);
             }
 
             /**
-             * Load state from localStorage or initialize
+             * Load state or initialize
              */
             function loadState() {
                 const todayDateString = getTodayDateString();
-                
-                try {
-                    const savedData = localStorage.getItem(STORAGE_KEY);
-                    
-                    if (savedData) {
-                        const parsedData = JSON.parse(savedData);
-                        console.log('📱 Datos encontrados en localStorage:', parsedData);
-                        
-                        // Check if it's the same day
-                        if (parsedData.date === todayDateString) {
-                            currentDayData = parsedData;
-                            console.log('📅 Cargando progreso del mismo día');
-                            
-                            // Apply saved state to UI
-                            medItems.forEach(item => {
-                                const medId = item.dataset.medId;
-                                if (currentDayData.meds[medId]) {
-                                    item.classList.add('taken');
-                                    console.log(`💊 ${medId} marcado como tomado`);
-                                }
-                            });
-                            
-                            showNotification('✅ Progreso del día cargado correctamente', 'success');
-                        } else {
-                            console.log('🌅 Nuevo día detectado, reiniciando estado');
-                            resetDay(false);
-                            showNotification('🆕 ¡Nuevo día! Medicaciones reiniciadas', 'info');
-                        }
-                    } else {
-                        console.log('🏁 Primera vez usando la app, inicializando...');
-                        currentDayData.date = todayDateString;
-                        saveState();
-                        showNotification('👋 ¡Bienvenido! Tu progreso se guardará automáticamente', 'info');
-                    }
-                } catch (error) {
-                    console.error('❌ Error al cargar desde localStorage:', error);
-                    currentDayData.date = todayDateString;
-                    showNotification('⚠️ Error al cargar datos guardados. Comenzando nuevo día.', 'warning');
-                }
+                currentDayData.date = todayDateString;
+                console.log('🏁 Inicializando nuevo día...');
+                showNotification('👋 ¡Bienvenido! Nuevo día iniciado', 'info');
             }
 
             /**
              * Show notification to user
              */
             function showNotification(message, type = 'info') {
-                // Create notification element
                 const notification = document.createElement('div');
                 notification.style.cssText = `
                     position: fixed;
@@ -860,7 +849,6 @@
                     border: 1px solid rgba(255,255,255,0.2);
                 `;
                 
-                // Set color based on type
                 const colors = {
                     success: 'background: linear-gradient(135deg, #10b981, #059669)',
                     error: 'background: linear-gradient(135deg, #ef4444, #dc2626)',
@@ -873,12 +861,10 @@
                 
                 document.body.appendChild(notification);
                 
-                // Animate in
                 setTimeout(() => {
                     notification.style.transform = 'translateX(0)';
                 }, 100);
                 
-                // Animate out and remove
                 setTimeout(() => {
                     notification.style.transform = 'translateX(100%)';
                     setTimeout(() => {
@@ -909,17 +895,14 @@
             function toggleMedicationTaken(item) {
                 const medId = item.dataset.medId;
                 if (medId) {
-                    // Add a subtle scale animation
                     item.style.transform = 'scale(0.95)';
                     setTimeout(() => {
                         const wasMarked = item.classList.contains('taken');
                         item.classList.toggle('taken');
                         currentDayData.meds[medId] = item.classList.contains('taken');
                         
-                        // Save immediately after change
                         saveState();
                         
-                        // Show feedback notification
                         const medName = item.querySelector('.med-name').textContent;
                         if (!wasMarked) {
                             showNotification(`✅ ${medName} marcado como tomado`, 'success');
@@ -943,7 +926,6 @@
                         resetCount++;
                     }
                     item.classList.remove('taken');
-                    // Add reset animation
                     item.style.transform = 'translateX(-10px)';
                     setTimeout(() => {
                         item.style.transform = '';
@@ -953,7 +935,6 @@
                 currentDayData.meds = {};
                 currentDayData.date = getTodayDateString();
                 
-                // Save the reset state
                 saveState();
                 
                 if (shouldShowNotification) {
@@ -990,7 +971,7 @@
             loadState();
             addInteractionEffects();
 
-            // Add click event listeners with improved feedback
+            // Add click event listeners
             medItems.forEach(item => {
                 item.addEventListener('click', (e) => {
                     e.preventDefault();
@@ -998,7 +979,7 @@
                 });
             });
 
-            // Reset button with confirmation and better feedback
+            // Reset button
             resetDayButton.addEventListener('click', () => {
                 const takenMeds = document.querySelectorAll('.med-item.taken').length;
                 
@@ -1013,7 +994,6 @@
                 if (confirmed) {
                     resetDay(true);
                     
-                    // Visual feedback for reset
                     resetDayButton.style.transform = 'scale(0.9)';
                     resetDayButton.textContent = '✅ Reiniciado';
                     
@@ -1022,33 +1002,6 @@
                         resetDayButton.textContent = '🔄 Reiniciar Día';
                     }, 1500);
                 }
-            });
-
-            // Auto-save and page visibility handling
-            document.addEventListener('visibilitychange', () => {
-                if (document.visibilityState === 'hidden') {
-                    // Page is being hidden (user switching tabs or closing)
-                    saveState();
-                    console.log('💾 Auto-guardado al cambiar de pestaña');
-                } else {
-                    // Page is becoming visible again - check for date change
-                    const todayDateString = getTodayDateString();
-                    if (currentDayData.date !== todayDateString) {
-                        loadState(); // This will reset if it's a new day
-                    }
-                }
-            });
-
-            // Periodic auto-save every 30 seconds
-            setInterval(() => {
-                saveState();
-                console.log('💾 Auto-guardado periódico');
-            }, 30000);
-
-            // Save before page unload
-            window.addEventListener('beforeunload', () => {
-                saveState();
-                console.log('💾 Guardado antes de cerrar');
             });
 
             // Update date every minute
