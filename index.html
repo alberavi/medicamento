@@ -847,7 +847,9 @@
                 const todayDateString = getTodayDateString();
                 currentDayData.date = todayDateString;
                 console.log('🏁 Inicializando nuevo día...');
+				setTimeout(() => {
                 showNotification('👋 ¡Nuevo día iniciado! ', 'info');
+				}, 2000);
             }
 
             /**
