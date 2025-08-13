@@ -847,7 +847,7 @@
                 const todayDateString = getTodayDateString();
                 currentDayData.date = todayDateString;
                 console.log('🏁 Inicializando nuevo día...');
-                showNotification('👋 ¡Bienvenido! Nuevo día iniciado', 'info');
+                showNotification('👋 ¡Nuevo día iniciado! ', 'info');
             }
 
             /**
@@ -859,7 +859,7 @@
                     position: fixed;
                     top: 20px;
                     right: 20px;
-                    padding: 1rem 1.5rem;
+                    padding: 0.25rem 0.40rem;
                     border-radius: 12px;
                     color: white;
                     font-weight: 600;
@@ -918,7 +918,7 @@
             function toggleMedicationTaken(item) {
                 const medId = item.dataset.medId;
                 if (medId) {
-                    item.style.transform = 'scale(0.95)';
+                    item.style.transform = 'scale(0.85)';
                     setTimeout(() => {
                         const wasMarked = item.classList.contains('taken');
                         item.classList.toggle('taken');
@@ -928,9 +928,9 @@
                         
                         const medName = item.querySelector('.med-name').textContent;
                         if (!wasMarked) {
-                            showNotification(`✅ ${medName} marcado como tomado`, 'success');
+                            showNotification(`✅ ${medName} `, 'success');
                         } else {
-                            showNotification(`↩️ ${medName} desmarcado`, 'info');
+                            showNotification(`↩️ ${medName} `, 'info');
                         }
                         
                         item.style.transform = '';
